@@ -4,3 +4,4 @@ seaborn
 # -e .       
 scickit-learn 
 catboost
+dill

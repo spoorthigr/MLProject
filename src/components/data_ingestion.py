@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
 from src.pipeline.exception import CustomException
 from src.pipeline.logger import logging
+from src.components.data_transformation import DataTransformation, DataTransformationConfig
 
 @dataclass
 class DataIngestionConfig:
@@ -24,12 +25,7 @@ class DataIngestion:
             logging.info('Dataset loaded successfully')
 
             # Ensure artifacts directory exists
-            artifacts_path = os.path.dirname(self.ingestion_config.raw_data_path)
-            if not os.path.exists(artifacts_path):
-                logging.info(f"Creating directory: {artifacts_path}")
-                os.makedirs(artifacts_path, exist_ok=True)
-            else:
-                logging.info(f"Directory already exists: {artifacts_path}")
+            os.makedirs(os.path.dirname(self.ingestion_config.raw_data_path), exist_ok=True)
 
             # Save raw data
             df.to_csv(self.ingestion_config.raw_data_path, index=False, header=True)
@@ -53,4 +49,7 @@ class DataIngestion:
 
 if __name__ == "__main__":
     obj = DataIngestion()
-    obj.initiate_data_ingestion()
+    train_data, test_data = obj.initiate_data_ingestion()
+    
+    data_transformation = DataTransformation()
+    data_transformation.initiate_data_transformation(train_data, test_data)
